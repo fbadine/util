@@ -141,8 +141,8 @@ def SaveHistory(filename, history):
         h_array = np.concatenate(
                       (np.array(list(history.keys())).reshape(-1, 1).T,
                         np.array(list(history.values())).T),
-                      axis=0)
-        print(filename)
+                        axis=0)
+
         file = filename + "_history.csv"
         if os.path.exists(file):
             print("File %s already exists. Backing it up to %s" % (file, filename + datetime.today().strftime('%Y%m%d') + "_history.csv"))
