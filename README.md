@@ -1,7 +1,6 @@
 # Neural Network Utilities
 
-This is a repository that contains generic utilities used by other deep learning projects.
-
+This is a repository that contains generic utilities used by other deep learning projects.  
 The following are currently available:
 ## model_util.py
 A collection of generic functions that can be used to handle Tensorflow Keras models.
@@ -23,7 +22,7 @@ A function to load a model and its weights as follows:
 * __custom_objects:__ A dictionary of Keras custom layers (if any) that were defined for the model that is being read
 
 #### *`SaveResults(model, init, history, test_results, metrics)`*
-Function to save training, validation and testing results into a file.  
+A function to save training, validation and testing results into a file.  
 The saved results will be as follows:
 * Training info: information about the training parameters used:
   - Loss function
@@ -52,14 +51,14 @@ The saved results will be as follows:
 
 
 #### *`SaveHistory(filename, history)`*
-Save all history values in order to be plotted later if needed  
+A function to save all history values in order to be plotted later if needed  
 The file will contain a column for each metric and as many records as the epochs values.  
 File dimensions: (Epochs + 1 lines) x (Number of Metrics columns) ... where (+1 for the name of metrics)
 The format for saving those is then as follows:
 * First line will contain the metrics names separated by commas
 * The next epochs-lines (one record for each epoch) will contain the values for each metric, also comma separated
 ##### Arguments
-* __filename:__ The full path of the fulename without file extension. A "\_history.csv" will be added to the filename
+* __filename:__ The full path of the filename without file extension. A "\_history.csv" will be added to the filename
 * __history:__ The history element from Keras .fit return object which is a record of training loss values and metrics values at successive epochs, as well as validation loss values and validation metrics values (if applicable)
 
 
