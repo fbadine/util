@@ -6,14 +6,27 @@ from shutil import copyfile
 
 from tensorflow.keras.models import model_from_json
 
+# This test is done so that if logger_name is not set in __main__, the script runs anyway without generating logs
+try:
+    from __main__ import logger_name
+    import logging
+    log = logging.getLogger(logger_name)
+except ImportError:
+    pass
+
 #
-# A generic unction to save the model and the weights as follows:
+# A generic function to save the model and the weights as follows:
 # - Model saved in the file 'filename.json' as a json file
 # - The weights in the file 'filename.h5'
-# filename being ghe full filename without the extension. Example: dir1/dir2/model
+# filename being the full filename without the extension. Example: dir1/dir2/model
 # 
 def SaveModel(model, filename):
-    if filename!= None:
+    if filename != None:
+        try:
+            log.info("Saving model and weights ...")
+        except NameError:
+            pass
+
         folder = os.path.dirname(filename)
         
         # Check if the directory to save the file at exists. If not create it
@@ -21,21 +34,44 @@ def SaveModel(model, filename):
             try:
                 os.makedirs(folder)
             except IOError as err:
-                print("Error while creating folder (" + str(folder) + "). Error[" + str(err.errno) + "]: " + str(err.strerror))
+                try:
+                    log.critical("Error while creating folder: %s ... Error[%d]: %s", folder, err.errno, err.strerror)
+                except NameError:
+                    print("Error while creating folder (" + str(folder) + "). Error[" + str(err.errno) + "]: " + str(err.strerror))
         
-        # Save the model in json file
+        # Backup model file if it exists
         file = filename + ".json"
         if os.path.exists(file):
-            print("File %s already exists. Backing it up to %s" % (file, filename + datetime.today().strftime('%Y%m%d') + ".json"))
+            try:
+                log.warning("File %s already exists. Backing it up to %s", file, filename + datetime.today().strftime('%Y%m%d') + ".json")
+            except NameError:
+                pass
+
             copyfile(file, filename + datetime.today().strftime('%Y%m%d') + ".json")
+
+        # Save the model in json file
         with open(file, "w") as json_file:
+            try:
+                log.debug("Saving model into %s", file)
+            except NameError:
+                pass
             json_file.write(model.to_json())
 
-        # Save weights in h5 file
+        # Backup weights file if it exists
         file = filename + ".h5"
         if os.path.exists(file):
-            print("File %s already exists. Backing it up to %s" % (file, filename + datetime.today().strftime('%Y%m%d') + ".h5"))
+            try:
+                log.warning("File %s already exists. Backing it up to %s", file, filename + datetime.today().strftime('%Y%m%d') + ".h5")
+            except NameError:
+                pass
+
             copyfile(file, filename + datetime.today().strftime('%Y%m%d') + ".h5")
+
+        # Save weights in h5 file
+        try:
+            log.debug("Saving weights into %s", file)
+        except NameError:
+            pass
         model.save_weights(file)
 
 
@@ -47,22 +83,44 @@ def SaveModel(model, filename):
 #
 def LoadModel(filename, custom_objects):
     model = None
+
     
     if filename != None:
+        try:
+            log.info("Loading model and weights ...")
+        except NameError:
+            pass
+
         # load and create model from json file
         file = filename + ".json"
         if os.path.exists(file):
             with open(file, "r") as json_file:
+                try:
+                    log.debug("Loading model from: %s", file)
+                except NameError:
+                    pass
+
                 model = model_from_json(json_file.read(), custom_objects=custom_objects)
         
             # load weights from h5 file into new model
             file = filename + ".h5"
             if os.path.exists(file):
+                try:
+                    log.debug("Loading weights from: %s", file)
+                except NameError:
+                    pass
+
                 model.load_weights(file)
             else:
-                print("File %s does not exist" % (file))
+                try:
+                    log.critical("File %s does not exist", file)
+                except NameError:
+                    print("File %s does not exist" % (file))
         else:
-            print("File %s does not exist" % (file))
+            try:
+                log.critical("File %s does not exist", file)
+            except NameError:
+                print("File %s does not exist" % (file))
     
     return model
 
@@ -86,13 +144,25 @@ def LoadModel(filename, custom_objects):
 #
 def SaveResults(model, init, history, test_result, metrics):
     if init != None and init.save != None:
+        try:
+            log.info("Saving results ...")
+        except NameError:
+            pass
+
         file = init.save + ".txt"
         if os.path.exists(file):
-            print("File %s already exists. Backing it up to %s" % (file, init.save + datetime.today().strftime('%Y%m%d') + ".txt"))
+            try:
+                log.warning("File %s already exists. Backing it up to %s", file, init.save + datetime.today().strftime('%Y%m%d') + ".txt")
+            except NameError:
+                pass
             copyfile(file, init.save + datetime.today().strftime('%Y%m%d') + ".txt")
         
         # Save information about Training and Validation parameters, hyper-parameters and results
         with open(init.save + ".txt", "w") as f:
+            try:
+                log.debug("Saving training info")
+            except NameError:
+                pass
             f.write("Training Info:\n")
             f.write("\tLoss Function: " + str(init.loss) + "\n")
             f.write("\tOptimisation Method: " + str(init.optimiser) + "\n")
@@ -100,22 +170,38 @@ def SaveResults(model, init, history, test_result, metrics):
             f.write("\tBatch Size: " + str(init.batchsize) + "\n")
             f.write("\tNumber of Epochs: " + str(init.epochs) + "\n")
 
+            try:
+                log.debug("Saving training results")
+            except NameError:
+                pass
             f.write("\nTraining Results:\n")
             for m in metrics:
                 key = m
                 f.write("\t" + str(m.title()) + ": " + str(history[key][-1]) + "\n")
 
             if init.validate == True:
+                try:
+                    log.debug("Saving validation results")
+                except NameError:
+                    pass
                 f.write("\nValidation Results:\n")
                 for m in metrics:
                     key = "val_" + m
                     f.write("\t" + str(m.title()) + ": " + str(history[key][-1]) + "\n")
 
             if init.evaltest == True:
+                try:
+                    log.debug("Saving testing results")
+                except NameError:
+                    pass
                 f.write("\nTesting Results:\n")
                 for m in metrics:
                     f.write("\t" + str(m.title()) + ": " + str(test_result[m]) + "\n")
 
+            try:
+                log.debug("Saving model summary")
+            except NameError:
+                pass
             f.write("\nModel Summary:\n")
             model.summary(print_fn=lambda x: f.write('\t' + x + '\n'))
 
@@ -134,6 +220,11 @@ def SaveResults(model, init, history, test_result, metrics):
 #
 def SaveHistory(filename, history):    
     if filename != None:
+        try:
+            log.info(" Saving history ...")
+        except NameError:
+            pass
+
         key_list = []
         for key in history.keys():
             key_list.append(key)
@@ -145,7 +236,14 @@ def SaveHistory(filename, history):
 
         file = filename + "_history.csv"
         if os.path.exists(file):
-            print("File %s already exists. Backing it up to %s" % (file, filename + datetime.today().strftime('%Y%m%d') + "_history.csv"))
+            try:
+                log.warning("File %s already exists. Backing it up to %s", file, filename + datetime.today().strftime('%Y%m%d') + "_history.csv")
+            except NameError:
+                pass
             copyfile(file, filename + datetime.today().strftime('%Y%m%d') + "_history.csv")
 
+        try:
+            log.debug("Saving history into %s", file)
+        except NameError:
+            pass
         np.savetxt(file, np.array(list(history.values())).T, header=header, delimiter=',')
