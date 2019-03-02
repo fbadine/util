@@ -81,12 +81,14 @@ Initialises logging. This function must be called in the main python file
 
 ### Usage
 In the main python file, do the following:
-- from Msglog import LogInit
-- log = LogInit('logger-name', logfilename, debuglevel)
+- Define a variable `logger_name` giving it the value that you want. This variable __must__ be defined at the beginning of the main python script before importing all other python files that uses the logging. Example: `logger_name = "Test"`
+- `from Msglog import LogInit`
+- `log = LogInit(logger_name, logfilename, debuglevel)`
 
-In all other python files, add the followuing
-- import logging
-- log = logging.getLogger('logger-name') where logger-name is the same one used in the first parameter when LogInit was called.
+In all other python files, add the following:
+- `from __main__ import logger_name`
+- `import logging`
+- `log = logging.getLogger(logger_name)`
 
 You can then write to logfile using the log class.<br>
 Example: `log.info("Tensorflow version: %s", tf.__version__)`
