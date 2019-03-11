@@ -1,5 +1,7 @@
 import os
+import sys
 import numpy as np
+import tensorflow as tf
 
 from datetime import datetime
 from shutil import copyfile
@@ -160,10 +162,18 @@ def SaveResults(model, init, history, test_result, metrics):
         # Save information about Training and Validation parameters, hyper-parameters and results
         with open(init.save + ".txt", "w") as f:
             try:
+                log.debug("Saving system info")
+            except NameError:
+                pass
+            f.write("System Info:\n")
+            f.write("\tPython version: " + str(sys.version) + "\n")
+            f.write("\tTensorFlow version: " + str(tf.__version__) + "\n")
+            f.write("\tKeras version: " + str(tf.keras.__version__) + "\n")
+            try:
                 log.debug("Saving training info")
             except NameError:
                 pass
-            f.write("Training Info:\n")
+            f.write("\nTraining Info:\n")
             f.write("\tLoss Function: " + str(init.loss) + "\n")
             f.write("\tOptimisation Method: " + str(init.optimiser) + "\n")
             f.write("\tLearning Rate: " + str(init.lr) + "\n")
