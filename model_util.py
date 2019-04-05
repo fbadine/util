@@ -20,7 +20,10 @@ except ImportError:
 # A generic function to save the model and the weights as follows:
 # - Model saved in the file 'filename.json' as a json file
 # - The weights in the file 'filename.h5'
-# filename being the full filename without the extension. Example: dir1/dir2/model
+#
+# The arguments that this function takes are:
+# - model:     The Keras model to save
+# - filename:  Full path of the filename where the model shall be saved without the file extension. Example: dir1/dir2/model
 # 
 def SaveModel(model, filename):
     if filename != None:
@@ -78,15 +81,23 @@ def SaveModel(model, filename):
 
 
 #
-# A generic unction to load a model and its weights as follows:
+# A generic function to load a model and its weights as follows:
 # - Model read from json file 'filename.json'
 # - Weights read from file 'filename.h5'
-# filename being ghe full filename without the extension. Example: dir1/dir2/model
+# filename being the full filename without the extension. Example: dir1/dir2/model
+#
+# The arguments that this function takes are:
+# - filename:  Full path of the filename from where the model shall be saved. The filename is without the file extension. Example: dir1/dir2/model
+# - custom_objects: A dictionary of user defined layers. For example, if you model has 2 custom layers "Layer1" and "Layer2", then custom_objects
+#   is defined as follows:
+#      custom_objects = {
+#              'Layer1': Layer1,
+#              'Layer2': Layer2
+#      }
 #
 def LoadModel(filename, custom_objects):
     model = None
 
-    
     if filename != None:
         try:
             log.info("Loading model and weights ...")
