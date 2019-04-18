@@ -26,7 +26,7 @@ except ImportError:
 # - filename:  Full path of the filename where the model shall be saved without the file extension. Example: dir1/dir2/model
 # 
 def SaveModel(model, filename):
-    if filename != None:
+    if filename is not None:
         try:
             log.info("Saving model and weights ...")
         except NameError:
@@ -98,7 +98,7 @@ def SaveModel(model, filename):
 def LoadModel(filename, custom_objects):
     model = None
 
-    if filename != None:
+    if filename is not None:
         try:
             log.info("Loading model and weights ...")
         except NameError:
@@ -156,7 +156,7 @@ def LoadModel(filename, custom_objects):
 # 5- Model Summary
 #
 def SaveResults(model, init, history, test_result, metrics):
-    if init != None and init.save != None:
+    if init is not None and init.save is not None:
         try:
             log.info("Saving results ...")
         except NameError:
@@ -200,7 +200,7 @@ def SaveResults(model, init, history, test_result, metrics):
                 key = m
                 f.write("\t" + str(m.title()) + ": " + str(history[key][-1]) + "\n")
 
-            if init.validate == True:
+            if init.validate is True:
                 try:
                     log.debug("Saving validation results")
                 except NameError:
@@ -210,7 +210,7 @@ def SaveResults(model, init, history, test_result, metrics):
                     key = "val_" + m
                     f.write("\t" + str(m.title()) + ": " + str(history[key][-1]) + "\n")
 
-            if init.evaltest == True:
+            if init.evaltest is True and test_result is not None:
                 try:
                     log.debug("Saving testing results")
                 except NameError:
@@ -240,7 +240,7 @@ def SaveResults(model, init, history, test_result, metrics):
 #                  Number of Metrics columns
 #
 def SaveHistory(filename, history):    
-    if filename != None:
+    if filename is not None:
         try:
             log.info(" Saving history ...")
         except NameError:
