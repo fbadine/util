@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import numpy as np
 import tensorflow as tf
 
@@ -228,16 +229,7 @@ def SaveResults(model, init, history, test_result, metrics):
 
 
 #
-# Save all history values in order to be plotted later if needed
-#
-# The format for saving those is as follows:
-#    First line will contain the metrics names separated by commas
-#    The next epochs-lines (one record for each epoch) will contain the
-#    values for each metric, also comma separated
-# So as a summary, the file will contain a column for each metric and as 
-# many records as the epochs values.
-# File dimensions: Epochs + 1 lines (+1 for the name of metrics)
-#                  Number of Metrics columns
+# Save all history values in a json file in order to be plotted later if needed
 #
 def SaveHistory(filename, history):    
     if filename is not None:
@@ -245,15 +237,6 @@ def SaveHistory(filename, history):
             log.info(" Saving history ...")
         except NameError:
             pass
-
-        key_list = []
-        for key in history.keys():
-            key_list.append(key)
-        header = ','.join(key_list)
-        h_array = np.concatenate(
-                      (np.array(list(history.keys())).reshape(-1, 1).T,
-                        np.array(list(history.values())).T),
-                        axis=0)
 
         file = filename + "_history.csv"
         if os.path.exists(file):
@@ -263,8 +246,9 @@ def SaveHistory(filename, history):
                 pass
             copyfile(file, filename + datetime.today().strftime('%Y%m%d') + "_history.csv")
 
-        try:
-            log.debug("Saving history into %s", file)
-        except NameError:
-            pass
-        np.savetxt(file, np.array(list(history.values())).T, header=header, delimiter=',')
+        with open(file, "w") as f:
+            try:
+                log.debug("Saving history into %s", file)
+            except NameError:
+                pass
+            json.dump(history, f)
