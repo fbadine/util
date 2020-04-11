@@ -51,15 +51,10 @@ The saved results will be as follows:
 
 
 #### *`SaveHistory(filename, history)`*
-A function to save all history values in order to be plotted later if needed  
-The file will contain a column for each metric and as many records as the epochs values.  
-File dimensions: (Epochs + 1 lines) x (Number of Metrics columns) ... where (+1 for the name of metrics)
-The format for saving those is then as follows:
-* First line will contain the metrics names separated by commas
-* The next epochs-lines (one record for each epoch) will contain the values for each metric, also comma separated
+Save all history values in a json file in order to be plotted later if needed  
 ##### Arguments
 * __filename:__ The full path of the filename without file extension. A "\_history.csv" will be added to the filename
-* __history:__ The history element from Keras .fit return object which is a record of training loss values and metrics values at successive epochs, as well as validation loss values and validation metrics values (if applicable)
+* __history:__ The history element from Keras .fit return object which is a dictionary of training loss values and metrics values at successive epochs, as well as validation loss values and validation metrics values (if applicable)
 
 
 ## Msglog.py
