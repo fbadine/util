@@ -60,8 +60,12 @@ Save all history values in a json file in order to be plotted later if needed
 ## Msglog.py
 A module that optimises the *logging object* in order to generate logs with the following format:<br>
 `YYYY-mm-dd HH:MM:SS.msec (process_id) (levelname) module.function -> message`<br>
+OR<br>
+`YYYY-mm-dd HH:MM:SS.msec (process_id) (levelname) thread.function -> message`<br>
 Example:<br>
 ```2019-02-21 18:44:37.548 (668456) (INFO) main.<module> -> Tensorflow version: 1.11.0```<br>
+OR<br>
+```2019-02-21 18:44:37.548 (668456) (INFO) MainThread.<module> -> Tensorflow version: 1.11.0```<br>
 This module will do the following:
 - All messages with level Error or CRITICAL will be written on the terminal where the main python file is being run regardless of whether you want to generate logs on not. All error and critical messages are written on the terminal.
 - If you choose to create logs, a logfile will be created with all messages whose level is greater than debuglevel.
@@ -73,6 +77,7 @@ Initialises logging. This function must be called in the main python file
 - __filename:__ Full path of the file where logs are to be written. This is a *TimedRotatingFileHandler* that rotates at midnight.
 - __debuglevel:__ The minimum log level that will be written into the file. All messages with level less than debuglevel will not be written into the file handler. Please check the logging class documentation for more info.
 - __log:__ Whether to generate logs or not.
+- __threadname:__ If True (default), put the threadname instead of the modulename in the log. threadname.function instead of module.function
 
 ### Usage
 In the main python file, do the following:
