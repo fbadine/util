@@ -13,7 +13,7 @@ import logging.handlers
 # - filename:     full path of the file where logs are to be written
 # - debuglevel:   Level for the FileHandler. Messages with level bigger or equal to this one will be logged
 #
-def LogInit(name, filename, debuglevel = logging.INFO, log = True):
+def LogInit(name, filename, debuglevel = logging.INFO, log = True, threadname = True):
     # If the passed debuglevel is not the allowed one, print an error and default to logging.INFO
     try:
         assert(debuglevel in [logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL])
@@ -26,7 +26,10 @@ def LogInit(name, filename, debuglevel = logging.INFO, log = True):
     logger.setLevel(debuglevel)
 
     # Set the log format
-    formatter = logging.Formatter('%(asctime)s.%(msecs)d (%(process)d) (%(levelname)s) %(module)s.%(funcName)s -> %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    if threadname == True:
+        formatter = logging.Formatter('%(asctime)s.%(msecs)d (%(process)d) (%(levelname)s) %(threadName)s.%(funcName)s -> %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    else:
+        formatter = logging.Formatter('%(asctime)s.%(msecs)d (%(process)d) (%(levelname)s) %(module)s.%(funcName)s -> %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
     # Configure a StreamHandler that will log messages with level ERROR and CRITICAL onto the console.
     # Those messages will be logged even if log == False
