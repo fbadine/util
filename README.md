@@ -34,7 +34,7 @@ The saved results will be as follows:
 * Validation results: Same as Training results (if available)
 * Testing results: The same metrics values for testing (if available), passed via the dictionary 'test_result'
 * Model Summary
-##### Argumentss
+##### Arguments
 * __model:__ The Keras model
 * __init:__ An object that must contain the following elements:
   - init.loss: Loss function that was used
